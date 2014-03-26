@@ -1,0 +1,8 @@
+tar
+	tar -zcvf file.tar.gz /path/to/dir :Create a compressed archive of a folder
+	tar -zxvf file.tar.gz :Extract files from a compressed archive
+unzip
+	unzip -o archive.zip :Extract files from an zip archive overriding existent files
+zip
+
+
