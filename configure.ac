@@ -14,12 +14,14 @@ PKG_CHECK_MODULES([CHECK],[check >= 0.9.4])
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS([stdlib.h string.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_CHECK_FUNCS([strstr])
+AC_CHECK_LIB([leveldb],[leveldb_open])
 
 
 AC_CONFIG_FILES([Makefile])
