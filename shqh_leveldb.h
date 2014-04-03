@@ -3,4 +3,6 @@
 
 void db_find_commands(char *command, void(*action)(char *, char * ,char*));
 
+void db_add_command(char *command, char * command_line, char * description);
+
 #endif

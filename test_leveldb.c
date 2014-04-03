@@ -11,7 +11,7 @@ void command_found_handler(char * c,char *cl,char *d)
 
 START_TEST(test_leveldb_read)
 {
-	printf("start");
+	db_add_command("tar","tar -xvf","extract files from the archive");
 	db_find_commands("tar",command_found_handler);
 	ck_assert_msg(found == 1,"fail to find entry in leveldb");
 }
@@ -28,7 +28,6 @@ Suite * leveldb_suite (void)
 
 int main()
 {
-	printf("main");
 	int number_failed;
 	Suite *s = leveldb_suite ();
 	SRunner *sr = srunner_create (s);
