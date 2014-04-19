@@ -11,7 +11,7 @@ void db_find_commands(char *command, void(*action)(char *, char * ,char  *))
 	leveldb_readoptions_t *roptions;
 	leveldb_t *db;
 	size_t res_size;
-	char * result,*err;
+	char * result,*err,*old_res;
 	options = leveldb_options_create();
 	if(options == 0)
 		return;
@@ -26,11 +26,14 @@ void db_find_commands(char *command, void(*action)(char *, char * ,char  *))
 		return;
 	}
 	result = leveldb_get(db,roptions,command,strlen(command), &res_size,&err);
+	leveldb_readoptions_destroy(roptions);
 	if(result == 0)
 	{
 		leveldb_close(db);
 		return;
 	}
+	old_res = result;
+	result = strndup(result,res_size);
 	char * cur=strtok(result,":");
 	do
 	{
@@ -38,6 +41,7 @@ void db_find_commands(char *command, void(*action)(char *, char * ,char  *))
 	}
 	while((cur =strtok(0,":"))!= 0);
 	free(result);
+	free(old_res);
 	leveldb_close(db);
 
 }
@@ -66,15 +70,26 @@ void db_add_command(char *command, char * command_line, char * description)
 		return;
 	}
 	result = leveldb_get(db,roptions,command,strlen(command), &res_size,&err);
-	int new_size = strlen(command_line) + strlen(description) + 2;
+	leveldb_readoptions_destroy(roptions);
+	int new_size = strlen(command_line) + strlen(description) + 4;
 	if(result == 0)
 	{
 		result=malloc(new_size);
-		if(result == 0) 
-			return exit(1);
+		if(result == 0)
+		{ 
+			leveldb_close(db);
+			return;
+		}
 		result[0]=0;
 	} else {
-		result = realloc(result,res_size+new_size+1);
+		char * ck=realloc(result,res_size+new_size+2);
+		if(ck == 0)
+		{
+			free(result);
+			leveldb_close(db);
+			return;
+		}
+		result =ck;
 		result[res_size]='\n';
 		result[res_size+1]=0;
 	}
@@ -89,6 +104,8 @@ void db_add_command(char *command, char * command_line, char * description)
 		return;
 	}
 	leveldb_put(db,woptions,command,strlen(command),result,strlen(result),&err);
+	leveldb_writeoptions_destroy(woptions);
+	free(result);
 	leveldb_close(db);
 }
 
