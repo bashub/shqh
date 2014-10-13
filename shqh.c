@@ -8,7 +8,7 @@
 
 void command_printer(char * command,char * command_line,char * description)
 {
-	printf("%-40s: %s\n",command_line,description);
+	printf("#%s\n %s\n\n",description,command_line);
 }
 struct option options [] = {
 	{"help", no_argument, 0,'h'},

@@ -29,7 +29,6 @@ Suite * file_suite (void)
 
 int main()
 {
-	printf("main");
 	int number_failed;
 	Suite *s = file_suite ();
 	SRunner *sr = srunner_create (s);
