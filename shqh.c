@@ -5,10 +5,20 @@
 #include "shqh_leveldb.h"
 #include "shqh_file.h"
 #include "shqh_file.h"
+#define KNRM  "\x1B[0m"
+#define KRED  "\x1B[31m"
+#define KGRN  "\x1B[32m"
+#define KYEL  "\x1B[33m"
+#define KBLU  "\x1B[34m"
+#define KMAG  "\x1B[35m"
+#define KCYN  "\x1B[36m"
+#define KWHT  "\x1B[37m"
+#define RESET "\033[0m"
+
 
 void command_printer(char * command,char * command_line,char * description)
 {
-	printf("#%s\n %s\n\n",description,command_line);
+	printf( KBLU "# %s\n"RESET"%s\n\n",description,command_line);
 }
 struct option options [] = {
 	{"help", no_argument, 0,'h'},
