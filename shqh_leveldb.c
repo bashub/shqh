@@ -2,6 +2,7 @@
 #include "config.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "shqh_leveldb.h"
 #define LEVELDB_NAME "level.db"
 
@@ -11,14 +12,20 @@ void db_find_commands(char *command, void(*action)(char *, char * ,char  *))
 	leveldb_readoptions_t *roptions;
 	leveldb_t *db;
 	size_t res_size;
-	char * result,*err,*old_res;
+	char * result,*err=0,*old_res;
 	options = leveldb_options_create();
 	if(options == 0)
 		return;
-	db = leveldb_open(options,LEVELDB_NAME,NULL);
+	db = leveldb_open(options,LEVELDB_NAME,&err);
 	leveldb_options_destroy(options);
-	if(db == 0)
+	if(db == 0) 
+	{
+#ifdef DEBUG
+		printf("%s \n",err);
+#endif
+		free(err);
 		return;
+	}
 	roptions = leveldb_readoptions_create();
 	if(roptions == 0)
 	{
@@ -29,6 +36,7 @@ void db_find_commands(char *command, void(*action)(char *, char * ,char  *))
 	leveldb_readoptions_destroy(roptions);
 	if(result == 0)
 	{
+		free(err);
 		leveldb_close(db);
 		return;
 	}
@@ -48,7 +56,7 @@ void db_find_commands(char *command, void(*action)(char *, char * ,char  *))
 
 void db_add_command(char *command, char * command_line, char * description)
 {
-	char * result, *err;
+	char * result, *err=0;
 	size_t res_size;
 	leveldb_options_t * options;
 	leveldb_t *db;
@@ -59,10 +67,13 @@ void db_add_command(char *command, char * command_line, char * description)
 	if(options == 0)
 		return;
 	leveldb_options_set_create_if_missing(options, 1);
-	db = leveldb_open(options,LEVELDB_NAME,NULL);
+	db = leveldb_open(options,LEVELDB_NAME,&err);
 	leveldb_options_destroy(options);
 	if(db == 0)
+	{
+		free(err);
 		return;
+	}
 	roptions = leveldb_readoptions_create();
 	if(roptions == 0)
 	{
@@ -74,6 +85,7 @@ void db_add_command(char *command, char * command_line, char * description)
 	int new_size = strlen(command_line) + strlen(description) + 4;
 	if(result == 0)
 	{
+		free(err);
 		result=malloc(new_size);
 		if(result == 0)
 		{ 
@@ -105,6 +117,7 @@ void db_add_command(char *command, char * command_line, char * description)
 	}
 	leveldb_put(db,woptions,command,strlen(command),result,strlen(result),&err);
 	leveldb_writeoptions_destroy(woptions);
+	free(err);
 	free(result);
 	leveldb_close(db);
 }
