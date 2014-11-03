@@ -36,15 +36,16 @@ void usage(char * pn)
 	printf("\t\t%s tar \n",pn);
 	printf("\nOptions \n");
 	printf("\t-h,--help\t\t\tshow this help \n");
-	printf("\t-O,--oneline-dict\t\tlookup for examples also on an online dictionary \n");
+	printf("\t-O,--online-dict\t\tlookup for examples also on an online dictionary \n");
 	printf("\t-o,--offline\t\t\tuse only offline dictionary \n");
-	printf("\t-d,--dictionary dictionary\tspecify the dictionary to use \n");
+	printf("\t-d,--dictionary=dictionary\tspecify the dictionary to use \n");
 	printf("\n\n");
 }
 
 int main(int argc, char **argv )
 {
 	int offline=0;
+	char ** searchArgs;
 	char * dictionary=0;
 	int opt;
 	int opt_indx;
@@ -67,12 +68,18 @@ int main(int argc, char **argv )
 				break;
 		}
 	}
-	if( argc -optind != 1)
+	if( argc - optind == 0)
 	{
 		printf("provide the name of an executable as argument\n");
 		exit(1);
 	}
 	char *ex = argv[optind];
+	int searchSize= argc - optind-1;
+	searchArgs= argv + optind+1;
+	int cur;
+	for(cur = 0;cur< searchSize;cur++){
+		//printf("%s",searchArgs[cur]);
+	}
 	file_find_commands(ex,command_printer);
 	db_find_commands(ex,command_printer);
 	return 0;
