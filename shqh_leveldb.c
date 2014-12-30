@@ -6,7 +6,7 @@
 #include "shqh_leveldb.h"
 #define LEVELDB_NAME "level.db"
 
-void db_find_commands(char *command, void(*action)(char *, char * ,char  *))
+void db_find_commands(char *command, void(*action)(char *, char * ,char  *),char ** search, int search_size)
 {
 	leveldb_options_t * options;
 	leveldb_readoptions_t *roptions;
@@ -45,7 +45,15 @@ void db_find_commands(char *command, void(*action)(char *, char * ,char  *))
 	char * cur=strtok(result,":");
 	do
 	{
-		action(command,cur,strtok(0,"\n"));
+		char *pos=strtok(0,"\n");
+		if(search != 0 && search_size > 0){
+			int is;
+			for(is=0;is<search_size&&pos!=0;is++)
+				if(strstr(pos+1,search[is])==0)
+					pos=0;
+		}
+		if(pos != 0)
+			action(command,cur,pos);
 	}
 	while((cur =strtok(0,":"))!= 0);
 	free(result);

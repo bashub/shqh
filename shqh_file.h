@@ -1,6 +1,6 @@
 #ifndef SHDH_FILE_H 
 #define SHDH_FILE_H
 
-void file_find_commands(char * command,void (*action)(char * , char *,char *));
+void file_find_commands(char * command,void (*action)(char * , char *,char *), char**search,int search_size);
 
 #endif

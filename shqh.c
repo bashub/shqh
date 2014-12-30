@@ -77,11 +77,13 @@ int main(int argc, char **argv )
 	int searchSize= argc - optind-1;
 	searchArgs= argv + optind+1;
 	int cur;
+#ifdef DEBUG
 	for(cur = 0;cur< searchSize;cur++){
-		//printf("%s",searchArgs[cur]);
+		printf("%s",searchArgs[cur]);
 	}
-	file_find_commands(ex,command_printer);
-	db_find_commands(ex,command_printer);
+#endif
+	file_find_commands(ex,command_printer,searchArgs, searchSize);
+	db_find_commands(ex,command_printer,searchArgs,searchSize);
 	return 0;
 }
 
